@@ -60,14 +60,6 @@ def set_song_position(position):
     subprocess.call(["playerctl", "position", str(position)])
 
 # Função chamada quando a barra de progresso é ajustada
-def progress_changed(event):
-    if not progress_dragging:
-        return
-    new_position = progress_slider.get()
-    if new_position == 0:
-        new_position = 1  # Evitar que a música pare ao mover para o início
-    set_song_position(new_position)
-
 def progress_press(event):
     global progress_dragging
     progress_dragging = True
@@ -126,8 +118,7 @@ def update_song_info():
     current_volume = get_system_volume()
     volume_slider.set(current_volume)
 
-    # Atualizar a cada 5 segundos
-    root.after(5000, update_song_info)
+    root.after(3000, update_song_info)
 
 # Funções para os controles de áudio
 def play_pause():
@@ -181,7 +172,7 @@ label_album.grid(row=2, column=0, sticky='w', pady=(5, 5))
 sliders_frame = ttk.Frame(frame_main)
 sliders_frame.grid(row=3, column=1, columnspan=1, sticky='ew', pady=(10, 0))
 
-progress_slider = ttk.Scale(sliders_frame, from_=0, to=100, orient='horizontal', command=progress_changed)
+progress_slider = ttk.Scale(sliders_frame, from_=0, to=100, orient='horizontal')
 progress_slider.pack(side='left', fill='x', expand=True, padx=(0, 5))
 progress_slider.bind("<ButtonPress-1>", progress_press)
 progress_slider.bind("<ButtonRelease-1>", progress_release)
