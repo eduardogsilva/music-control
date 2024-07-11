@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk, ImageDraw
@@ -11,7 +10,35 @@ def create_placeholder_image(size, color=(200, 200, 200)):
     img = Image.new('RGB', size, color)
     return ImageTk.PhotoImage(img)
 
-# Função para atualizar as informações da música atual
+# Função para obter o volume atual do sistema
+def get_system_volume():
+    try:
+        # Corrigir o comando para capturar o volume corretamente
+        default_sink = subprocess.check_output(
+            "pactl info | grep 'Default Sink' | awk '{print $3}'",
+            shell=True
+        ).decode("utf-8").strip()
+
+        volume_output = subprocess.check_output(
+            f"pactl list sinks | grep -A 15 '{default_sink}' | grep '^[[:space:]]Volume:' | head -n 1 | awk '{{print $5}}'",
+            shell=True
+        ).decode("utf-8").strip()
+
+        volume_percentage = int(volume_output.strip('%'))
+        return volume_percentage
+    except subprocess.CalledProcessError:
+        return 0
+
+# Função para ajustar o volume do sistema
+def set_system_volume(volume):
+    subprocess.call(["pactl", "set-sink-volume", "@DEFAULT_SINK@", f"{volume}%"])
+
+# Função chamada quando o slider de volume é ajustado
+def volume_changed(event):
+    new_volume = volume_slider.get()
+    set_system_volume(new_volume)
+
+# Função para atualizar as informações da música atual e o volume
 def update_song_info():
     try:
         song_title = subprocess.check_output(["playerctl", "metadata", "title"]).decode("utf-8").strip()
@@ -44,6 +71,10 @@ def update_song_info():
         label_image.config(image=placeholder_image)
         label_image.image = placeholder_image
 
+    # Atualizar o volume do slider
+    current_volume = get_system_volume()
+    volume_slider.set(current_volume)
+
     # Atualizar a cada 5 segundos
     root.after(5000, update_song_info)
 
@@ -73,7 +104,6 @@ root.geometry("500x175")
 root.resizable(True, False)
 #root.attributes('-topmost', True)
 #root.overrideredirect(True)
-
 
 # Criar imagem de placeholder
 placeholder_image = create_placeholder_image((100, 100))
@@ -107,6 +137,11 @@ btn_play_pause.grid(row=0, column=1, padx=5)
 
 btn_next = ttk.Button(frame_controls, text="Next", command=next_song)
 btn_next.grid(row=0, column=2, padx=5)
+
+# Slider de volume
+volume_slider = ttk.Scale(frame_controls, from_=0, to=100, orient='horizontal', command=volume_changed, length=150)
+volume_slider.grid(row=0, column=3, padx=5)
+volume_slider.set(get_system_volume())
 
 # Iniciar a atualização das informações da música
 update_song_info()
