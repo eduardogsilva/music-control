@@ -184,13 +184,13 @@ volume_slider.pack(side='left', fill='x', expand=True, padx=(5, 0))
 frame_controls = ttk.Frame(frame_main)
 frame_controls.grid(row=4, column=0, columnspan=2, pady=(10, 0), sticky='w')
 
-btn_previous = ttk.Button(frame_controls, text="Previous", command=previous_song)
+btn_previous = ttk.Button(frame_controls, text="⏪", command=previous_song)
 btn_previous.grid(row=0, column=0, padx=5)
 
-btn_play_pause = ttk.Button(frame_controls, text="Play/Pause", command=play_pause)
+btn_play_pause = ttk.Button(frame_controls, text="▶️", command=play_pause)
 btn_play_pause.grid(row=0, column=1, padx=5)
 
-btn_next = ttk.Button(frame_controls, text="Next", command=next_song)
+btn_next = ttk.Button(frame_controls, text="⏩", command=next_song)
 btn_next.grid(row=0, column=2, padx=5)
 
 progress_dragging = False
