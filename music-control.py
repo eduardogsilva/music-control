@@ -116,14 +116,17 @@ frame_main.pack(pady=10, padx=10, fill='x')
 label_image = ttk.Label(frame_main, image=placeholder_image)
 label_image.grid(row=0, column=0, rowspan=3, padx=(0, 10), pady=5, sticky='w')
 
-label_song = ttk.Label(frame_main, text="Title: Not Playing", font=("Helvetica", 12))
-label_song.grid(row=0, column=1, sticky='w')
+text_frame = ttk.Frame(frame_main)
+text_frame.grid(row=0, column=1, rowspan=3, sticky='w')
 
-label_artist = ttk.Label(frame_main, text="Artist: Not Available", font=("Helvetica", 12))
-label_artist.grid(row=1, column=1, sticky='w')
+label_song = ttk.Label(text_frame, text="Title: Not Playing", font=("Helvetica", 12), anchor='w', width=40)
+label_song.grid(row=0, column=0, sticky='w', pady=(0, 20))
 
-label_album = ttk.Label(frame_main, text="Album: Not Available", font=("Helvetica", 12))
-label_album.grid(row=2, column=1, sticky='w')
+label_artist = ttk.Label(text_frame, text="Artist: Not Available", font=("Helvetica", 12), anchor='w', width=40)
+label_artist.grid(row=1, column=0, sticky='w', pady=(2, 20))
+
+label_album = ttk.Label(text_frame, text="Album: Not Available", font=("Helvetica", 12), anchor='w', width=40)
+label_album.grid(row=2, column=0, sticky='w', pady=(2, 0))
 
 # Controles de áudio
 frame_controls = ttk.Frame(frame_main)
@@ -139,7 +142,10 @@ btn_next = ttk.Button(frame_controls, text="Next", command=next_song)
 btn_next.grid(row=0, column=2, padx=5)
 
 # Slider de volume
-volume_slider = ttk.Scale(frame_controls, from_=0, to=100, orient='horizontal', command=volume_changed, length=150)
+style = ttk.Style()
+style.configure("TScale", troughcolor='grey', sliderthickness=15)
+
+volume_slider = ttk.Scale(frame_controls, from_=0, to=100, orient='horizontal', command=volume_changed, style="TScale")
 volume_slider.grid(row=0, column=3, padx=5)
 volume_slider.set(get_system_volume())
 
